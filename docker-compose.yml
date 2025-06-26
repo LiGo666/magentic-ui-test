@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  magentic-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: magentic-ui
+    ports:
+      - "8082:8081"
+      - "6080:6080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./workspace:/workspace
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - INSIDE_DOCKER=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - INTERNAL_WORKSPACE_ROOT=/workspace
+      - EXTERNAL_WORKSPACE_ROOT=/workspace
+      - DOCKER_NETWORK=my-network
+      - USE_DOCKER_HOST_INTERNAL=1
+    networks:
+      - my-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  my-network:
+    external: true
