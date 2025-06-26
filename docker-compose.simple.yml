@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  magentic-ui:
+    image: magentic-ui-vnc-browser  # We'll build this image separately
+    ports:
+      - "8082:8081"  # Main UI port
+      - "6080:6080"  # VNC port
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./workspace:/workspace
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - INSIDE_DOCKER=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DOCKER_NETWORK=my-network
+      - USE_DOCKER_HOST_INTERNAL=1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    external: true
